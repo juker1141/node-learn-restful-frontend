@@ -81,7 +81,6 @@ class Feed extends Component {
   };
 
   statusUpdateHandler = (event) => {
-    console.log(this.state.status);
     event.preventDefault();
     fetch("http://localhost:8080/auth/status", {
       method: "PATCH",
