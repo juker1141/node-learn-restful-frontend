@@ -63,6 +63,7 @@ class Feed extends Component {
               _id
               title
               content
+              imageUrl
               creator {
                 name
               }
@@ -161,13 +162,12 @@ class Feed extends Component {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${this.props.token}`,
-        "Content-Type": "application/json",
       },
       body: formData,
     })
       .then((res) => res.json())
       .then((fileResData) => {
-        const imageUrl = fileResData.filePath;
+        const imageUrl = fileResData.filePath.replace(/\\/g, "/");
 
         let graphqlQuery = {
           query: `
@@ -175,7 +175,7 @@ class Feed extends Component {
               createPost(postInput: {
                 title: "${postData.title}",
                 content: "${postData.content}",
-                imageUrl: "tests",
+                imageUrl: "${imageUrl}",
               }) {
                 _id
                 title
