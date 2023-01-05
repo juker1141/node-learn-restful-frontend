@@ -189,6 +189,31 @@ class Feed extends Component {
             }
           `,
         };
+        if (this.state.editPost) {
+          graphqlQuery = {
+            query: `
+              mutation {
+                updatePost(
+                  id: "${this.state.editPost._id}"
+                  postInput: {
+                    title: "${postData.title}",
+                    content: "${postData.content}",
+                    imageUrl: "${imageUrl}",
+                  }
+                ) {
+                  _id
+                  title
+                  content
+                  imageUrl
+                  creator {
+                    name
+                  }
+                  createdAt
+                }
+              }
+          `,
+          };
+        }
 
         return fetch("http://localhost:8080/graphql", {
           method: "POST",
@@ -212,7 +237,10 @@ class Feed extends Component {
           throw new Error("User creation failed!");
         }
         console.log(resData);
-        const postData = resData.data.createPost;
+        const postData = this.state.editPost
+          ? resData.data.updatePost
+          : resData.data.createPost;
+
         const post = {
           _id: postData._id,
           title: postData.title,
